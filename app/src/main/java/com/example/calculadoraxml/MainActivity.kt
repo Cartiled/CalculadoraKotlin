@@ -33,6 +33,7 @@ import androidx.core.view.WindowInsetsCompat
      lateinit var buttonMultiplicar: Button
      lateinit var buttonRestar: Button
      lateinit var buttonIgual: Button
+     lateinit var buttonComa :Button
 
     @SuppressLint("SetTextI18n")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,48 +42,11 @@ import androidx.core.view.WindowInsetsCompat
         setContentView(R.layout.activity_main)
 
 
+        init()
 
+        setClickEvent()
 
-        /*
-        button1.setOnClickListener(){
-            textView.text = textView.text.toString() + 1;
-        }
-        button2.setOnClickListener(){
-            textView.text = textView.text.toString() + 2;
-        }
-        button3.setOnClickListener(){
-            textView.text = textView.text.toString() + 3;
-        }
-        button4.setOnClickListener(){
-            textView.text = textView.text.toString() + 4;
-        }
-        button5.setOnClickListener(){
-            textView.text = textView.text.toString() + 5;
-        }
-        button6.setOnClickListener(){
-            textView.text = textView.text.toString() + 6;
-        }
-        button7.setOnClickListener(){
-            textView.text = textView.text.toString() + 7;
-        }
-        button8.setOnClickListener(){
-            textView.text = textView.text.toString() + 8;
-        }
-        button9.setOnClickListener(){
-            textView.text = textView.text.toString() + 9;
-        }
-        button0.setOnClickListener(){
-            textView.text = textView.text.toString() + 0;
-        }
-        buttonVaciar.setOnClickListener(){
-            textView.setText("");
-        }
-        buttonSumar.setOnClickListener(){
-           if (textView.text.isNotEmpty()){
-               textView.text = textView.text.toString() + "+";
-
-           }
-        }*/
+        cln()
 
 
 
@@ -91,15 +55,56 @@ import androidx.core.view.WindowInsetsCompat
 
     }
 
+     fun calculate(){
+         for (i in mixList.indices){
+            if(i > mixList.size -1 ) break;
+             if(mixList.get(i).equals("*")){
+                val tmp : Long = mixList.get(i -1).toLong() * mixList.get(i + 1).toLong()
+                 mixList.set(i -1, tmp.toString());
+                 mixList.removeAt(i)
+                 mixList.removeAt(i)
+
+             }else if(mixList.get(i).equals("/")){
+                 if(mixList.get(i + 1).equals("0"))break;
+                 val tmp : Long = mixList.get(i - 1).toLong() / mixList.get(i + 1).toLong();
+                 mixList.removeAt(i)
+                 mixList.removeAt(i)
+             }
+         }
+        for(i in mixList.indices){
+            if(i > mixList.size - 1)break;
+            if(mixList.get(i).equals("+")){
+                val tmp :Long = mixList.get(i -1 ).toLong() + mixList.get(i + 1).toLong()
+                mixList.set(i -1,tmp.toString())
+                mixList.removeAt(i)
+                mixList.removeAt(i)
+            }else if(mixList.get(i).equals("-")) {
+                val tmp: Long = mixList.get(i - 1).toLong() - mixList.get(i + 1).toLong()
+                mixList.set(i -1,tmp.toString())
+                mixList.removeAt(i)
+                mixList.removeAt(i)
+            }
+        }
+     }
+
+     fun equal(){
+         if (operateCount == 0) return
+         if(operateCount == numCount){
+             mixList.removeAt(mixList.size -1)
+         }
+         calculate()
+         show(mixList)
+     }
 
      fun addNum(num : Long){
          if (operateCount == numCount){
              numCount++
              mixList.add(num.toString())
          }else {
-             val numPlus : Long = mixList.get(mixList.size - 1).toString() * 10 + num
+             val numPlus : Long = mixList.get(mixList.size - 1).toLong() * 10 + num
              mixList.set(mixList.size - 1, numPlus.toString())
          }
+         show(mixList)
      }
 
      fun show (list : ArrayList<String>){
@@ -124,7 +129,7 @@ import androidx.core.view.WindowInsetsCompat
          }else if (operateCount == numCount){
              mixList.set(mixList.size - 1, operate.toString())
          }
-
+         show(mixList)
      }
 
      fun setClickEvent(){
@@ -144,6 +149,7 @@ import androidx.core.view.WindowInsetsCompat
          buttonSumar.setOnClickListener(this)
          buttonVaciar.setOnClickListener(this)
          buttonRestar.setOnClickListener(this)
+         buttonComa.setOnClickListener(this)
      }
 
      fun init() {
@@ -164,6 +170,7 @@ import androidx.core.view.WindowInsetsCompat
          buttonMultiplicar = findViewById(R.id.button16)
          buttonRestar = findViewById(R.id.button17)
          buttonIgual = findViewById(R.id.button22)
+         buttonComa = findViewById(R.id.button21)
      }
 
     override fun onClick(p0: View?) {
@@ -182,9 +189,11 @@ import androidx.core.view.WindowInsetsCompat
             R.id.button18 -> addOperate('+')
             R.id.button17 -> addOperate('-')
             R.id.button16 -> addOperate('*')
-            R.id.button17 -> addOperate('/')
+            R.id.button6 -> addOperate('/')
+            R.id.button21 -> addOperate(',')
             R.id.button -> cln()
-            
+            R.id.button22 -> equal()
+
 
         }
     }
